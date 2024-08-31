@@ -20,4 +20,6 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('report', ReportController::class);
 
+Route::post('/report/analyze', [ReportController::class, 'analyze'])->name('report.analyze');
+
 require __DIR__.'/auth.php';
