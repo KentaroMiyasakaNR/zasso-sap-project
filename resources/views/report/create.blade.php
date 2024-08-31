@@ -13,9 +13,12 @@
                 <form action="{{ route('report.store') }}" method="POST" enctype="multipart/form-data" style="width: 100%; max-width: 300px;">
                     @csrf
                     <div style="margin-bottom: 20px;">
-                        <input type="file" name="photo" id="photo" accept="image/*" capture="environment" style="display: none;" onchange="previewImage(this);">
-                        <button type="button" onclick="document.getElementById('photo').click();" style="display: inline-block; width: 100%; padding: 12px 24px; background-color: #4CAF50; color: white; text-decoration: none; text-align: center; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; cursor: pointer;">
-                            写真を撮影/選択
+                        <input type="file" name="photo" id="photo" accept="image/*" style="display: none;" onchange="previewImage(this);">
+                        <button type="button" onclick="document.getElementById('photo').click();" style="display: inline-block; width: 100%; padding: 12px 24px; background-color: #4CAF50; color: white; text-decoration: none; text-align: center; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; cursor: pointer; margin-bottom: 10px;">
+                            写真を選択
+                        </button>
+                        <button type="button" onclick="takePicture();" style="display: inline-block; width: 100%; padding: 12px 24px; background-color: #FF9800; color: white; text-decoration: none; text-align: center; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; cursor: pointer;">
+                            写真を撮影
                         </button>
                     </div>
                     
@@ -35,16 +38,52 @@
 
     <script>
     function previewImage(input) {
-        var preview = document.getElementById('preview');
-        var previewDiv = document.getElementById('imagePreview');
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function(e) {
-                preview.src = e.target.result;
-                previewDiv.style.display = 'block';
+                document.getElementById('preview').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
             }
             reader.readAsDataURL(input.files[0]);
         }
+    }
+
+    function takePicture() {
+        navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+            var video = document.createElement('video');
+            document.body.appendChild(video);
+            video.srcObject = stream;
+            video.play();
+
+            var canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            setTimeout(function() {
+                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                var imageDataUrl = canvas.toDataURL('image/jpeg');
+                document.getElementById('preview').src = imageDataUrl;
+                document.getElementById('imagePreview').style.display = 'block';
+
+                // 撮影した画像をファイル入力に設定
+                fetch(imageDataUrl)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const file = new File([blob], "camera_photo.jpg", { type: "image/jpeg" });
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        document.getElementById('photo').files = dataTransfer.files;
+                    });
+
+                stream.getTracks().forEach(track => track.stop());
+                document.body.removeChild(video);
+            }, 1000);
+        })
+        .catch(function(error) {
+            console.error("カメラにアクセスできません: ", error);
+            alert("カメラにアクセスできません。デバイスの設定を確認してください。");
+        });
     }
     </script>
 </x-app-layout>
