@@ -7,7 +7,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
-                'resources/js/report.js', // Add this line
+                'resources/js/report.js', 
             ],
             refresh: true,
         }),
