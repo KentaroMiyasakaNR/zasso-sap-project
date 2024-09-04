@@ -29,9 +29,24 @@
                     </div>
                 </form>
                 <div id="result" style="margin-top: 20px; text-align: center;"></div>
+                <button id="reportBtn" style="display: none; margin-top: 20px; padding: 12px 24px; background-color: #FF5722; color: white; text-decoration: none; text-align: center; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; cursor: pointer;">
+                    報告する
+                </button>
             </div>
         </div>
     </div>
-    <a href="{{ route('report.index') }}">一覧に戻る</a>
-    @vite(['resources/css/app.css', 'resources/js/report.js'])
+
+    <!-- モーダル -->
+    <div id="reportModal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+        <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 10px;">
+            <h2 style="text-align: center; margin-bottom: 20px;">この内容を報告しますか？</h2>
+            <img id="modalPreview" src="#" alt="選択した写真" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-around;">
+                <button id="confirmReportBtn" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">報告する</button>
+                <button id="cancelReportBtn" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">キャンセル</button>
+            </div>
+        </div>
+    </div>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/report.js'])
 </x-app-layout>

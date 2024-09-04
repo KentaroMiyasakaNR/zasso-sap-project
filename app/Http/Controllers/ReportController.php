@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Report;
+use App\Models\Plant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
@@ -25,11 +28,42 @@ class ReportController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 新しい報告を保存する
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'identification_result' => 'required|string',
+            'photo' => 'required|image|max:2048', // 2MBまでの画像ファイル
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+        ]);
+
+        // 画像を保存
+        $photoPath = $request->file('photo')->store('reports', 'public');
+
+        // 報告を作成
+        $report = Report::create([
+            'user_id' => Auth::id(),
+            'identification_result' => $request->identification_result,
+            'photo_path' => $photoPath,
+            'reported_at' => now(),
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'status_id' => 1, // デフォルトのステータスID
+        ]);
+
+        // 植物名を抽出して保存（簡易的な実装）
+        $plantNames = explode(',', $request->plant_names);
+        foreach ($plantNames as $name) {
+            $plant = Plant::firstOrCreate(['name' => trim($name)]);
+            $report->plants()->attach($plant->id);
+        }
+
+        return response()->json([
+            'message' => '報告が正常に保存されました。',
+            'report_id' => $report->id
+        ], 201);
     }
 
     /**

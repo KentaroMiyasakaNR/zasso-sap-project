@@ -11,6 +11,13 @@ if (typeof window.reportScriptLoaded === 'undefined') {
     const selectPhotoBtn = document.getElementById('selectPhotoBtn');
     const analyzeBtn = document.getElementById('analyzeBtn');
 
+    // New DOM elements
+    const reportBtn = document.getElementById('reportBtn');
+    const reportModal = document.getElementById('reportModal');
+    const modalPreview = document.getElementById('modalPreview');
+    const confirmReportBtn = document.getElementById('confirmReportBtn');
+    const cancelReportBtn = document.getElementById('cancelReportBtn');
+
     // Debug logging function
     function debugLog(message) {
         console.log(`[DEBUG] ${message}`);
@@ -32,17 +39,16 @@ if (typeof window.reportScriptLoaded === 'undefined') {
 
     // Function to analyze the image
     function analyzeImage(event) {
-        debugLog('analyzeImage called');
         event.preventDefault(); // フォームのデフォルトの送信を防ぐ    
-        // ファイルが選択されているか確認
+        console.log('同定分析analyzeImage called');
+        
         if (!photoInput.files || photoInput.files.length === 0) {
             resultDiv.innerHTML = '<p>写真を選択してください。</p>';
-            debugLog('No file selected');
             return;
         }
         
-        debugLog('Preparing to send request');
         const formData = new FormData(uploadForm);
+        
         fetch(uploadForm.action, {
             method: 'POST',
             body: formData,
@@ -50,25 +56,72 @@ if (typeof window.reportScriptLoaded === 'undefined') {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             }
         })
-        .then(response => {
-            debugLog('Response received');
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            debugLog('Data parsed');
             if (data && data.choices && data.choices[0] && data.choices[0].message) {
                 resultDiv.innerHTML = `<p>${data.choices[0].message.content}</p>`;
-                debugLog('Result displayed');
+                reportBtn.style.display = 'inline-block'; // 分析結果が表示されたら報告ボタンを表示
             } else {
                 console.error('Unexpected data structure:', data);
                 resultDiv.innerHTML = '<p>予期しないデータ構造です。管理者に連絡してください。</p>';
-                debugLog('Unexpected data structure');
             }
         })
         .catch(error => {
             console.error('Error:', error);
             resultDiv.innerHTML = '<p>エラーが発生しました。もう一度お試しください。</p>';
-            debugLog('Error occurred: ' + error.message);
+        });
+    }
+
+    // New function to show report modal
+    function showReportModal() {
+        modalPreview.src = preview.src;
+        reportModal.style.display = 'block';
+    }
+
+    // New function to hide report modal
+    function hideReportModal() {
+        reportModal.style.display = 'none';
+    }
+
+    // Function to submit report
+    function submitReport() {
+        const formData = new FormData();
+        formData.append('photo', photoInput.files[0]);
+        formData.append('identification_result', resultDiv.innerText);
+        
+        // 位置情報を取得（オプション）
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                formData.append('latitude', position.coords.latitude);
+                formData.append('longitude', position.coords.longitude);
+                sendReportData(formData);
+            }, function(error) {
+                console.error("位置情報の取得に失敗しました:", error);
+                sendReportData(formData);
+            });
+        } else {
+            sendReportData(formData);
+        }
+    }
+
+    // Function to send report data
+    function sendReportData(formData) {
+        fetch('/reports', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('報告が送信されました:', data);
+            alert('報告が正常に送信されました。');
+            hideReportModal();
+        })
+        .catch(error => {
+            console.error('報告の送信中にエラーが発生しました:', error);
+            alert('報告の送信中にエラーが発生しました。もう一度お試しください。');
         });
     }
 
@@ -88,6 +141,11 @@ if (typeof window.reportScriptLoaded === 'undefined') {
         
         // フォームの送信イベントを処理
         uploadForm.addEventListener('submit', analyzeImage);
+        
+        // New event listeners
+        reportBtn.addEventListener('click', showReportModal);
+        cancelReportBtn.addEventListener('click', hideReportModal);
+        confirmReportBtn.addEventListener('click', submitReport);
         
         debugLog('Event listeners initialized');
     }
