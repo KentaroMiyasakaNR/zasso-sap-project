@@ -18,4 +18,21 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+
+    # Explicitly allow GET, POST, HEAD, and OPTIONS requests
+    <LimitExcept GET POST HEAD OPTIONS>
+        Order deny,allow
+        Deny from all
+    </LimitExcept>
+</IfModule>
+
+# PHP settings
+<IfModule mod_php7.c>
+    php_flag display_errors Off
+    php_value max_execution_time 300
+    php_value max_input_time 300
+    php_value max_input_vars 1000
+    php_value memory_limit 256M
+    php_value post_max_size 64M
+    php_value upload_max_filesize 64M
 </IfModule>
