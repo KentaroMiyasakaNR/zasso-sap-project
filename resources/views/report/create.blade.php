@@ -9,8 +9,8 @@
             <h2 style="text-align: center; font-size: 20px; color: #333; margin-bottom: 30px;">植物の写真をアップロード</h2>
            
             <div style="display: flex; flex-direction: column; align-items: center;">
-                <form id="uploadForm" action="{{ route('report.analyze') }}" method="POST" enctype="multipart/form-data" style="width: 100%; max-width: 300px;">
-                    @csrf
+                <form id="uploadForm" method="POST" enctype="multipart/form-data" style="width: 100%; max-width: 300px;" action="{{ route('report.analyze') }}">
+                    @csrf  <!-- この行を追加 -->
                     <div style="margin-bottom: 20px;">
                         <input type="file" name="photo" id="photo" accept="image/*" style="display: none;">
                         <button type="button" id="selectPhotoBtn" style="display: inline-block; width: 100%; padding: 12px 24px; background-color: #4CAF50; color: white; text-decoration: none; text-align: center; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; cursor: pointer; margin-bottom: 10px;">

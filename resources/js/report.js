@@ -106,11 +106,13 @@ if (typeof window.reportScriptLoaded === 'undefined') {
 
     // Function to send report data
     function sendReportData(formData) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        
         fetch('/reports', {
             method: 'POST',
             body: formData,
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                'X-CSRF-TOKEN': csrfToken
             }
         })
         .then(response => response.json())
