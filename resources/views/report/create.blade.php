@@ -60,15 +60,15 @@
     <!-- 報告一覧イメージボタン -->
     <div style="text-align: center; margin-top: 20px;">
         <button id="showReportListBtn" style="padding: 12px 24px; background-color: #3498db; color: white; text-decoration: none; text-align: center; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; cursor: pointer;">
-            報告一覧イメージ
+            みんなの報告一覧 地図のイメージ
         </button>
     </div>
 
     <!-- 報告一覧イメージモーダル -->
     <div id="reportListModal" style="display: none; position: fixed; z-index: 2; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
         <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 10px;">
-            <h2 style="text-align: center; margin-bottom: 20px;">報告一覧イメージ</h2>
-            <img src="{{ asset('images/reports/indexGov.png') }}" alt="報告一覧イメージ" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px;">
+            <h2 style="text-align: center; margin-bottom: 20px;">報告された植物は、地図上で場所を見ることができる想定です</h2>
+            <img src="{{ asset('images/reports/みんなの報告をマップ.jpg') }}" alt="報告一覧イメージ" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px;">
             <div style="text-align: center;">
                 <button id="closeReportListBtn" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">閉じる</button>
             </div>
