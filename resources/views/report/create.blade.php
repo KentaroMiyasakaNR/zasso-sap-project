@@ -35,7 +35,7 @@
                 </form>
                 <div id="result" style="margin-top: 20px; text-align: center;"></div>
                 <button id="reportBtn" style="display: none; margin-top: 20px; padding: 12px 24px; background-color: #FF5722; color: white; text-decoration: none; text-align: center; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; cursor: pointer;">
-                    ※③報告機能は工事中です※
+                    ③報告（データ登録は現在はされません）
                 </button>
             </div>
         </div>
