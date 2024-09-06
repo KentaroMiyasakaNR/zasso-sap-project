@@ -121,7 +121,7 @@ class ReportController extends Controller
                     'content' => [
                         [
                             'type' => 'text',
-                            'text' => 'この画像の植物の属名を教えてください。また精度の確率も合わせて提示してください。'
+                            'text' => 'この画像の植物の属名を教えてください。なるべく特定外来植物の可能性を考慮して'
                         ],
                         [
                             'type' => 'image_url',
@@ -132,7 +132,7 @@ class ReportController extends Controller
                     ]
                 ]
             ],
-            'max_tokens' => 300
+            'max_tokens' => 1000
         ]);
 
         Storage::disk('public')->delete($imagePath);
