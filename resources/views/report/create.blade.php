@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h2 style="font-size: 24px; color: #333;">
-                {{ __('新規報告作成') }}
+                {{ __('Gair AI') }}
             </h2>
             <div id="pointDisplay" style="font-size: 18px; font-weight: bold; color: #4CAF50;">
                 0P
@@ -19,7 +19,7 @@
                     <div style="margin-bottom: 20px;">
                         <input type="file" name="photo" id="photo" accept="image/*" style="display: none;">
                         <button type="button" id="selectPhotoBtn" style="display: inline-block; width: 100%; padding: 12px 24px; background-color: #4CAF50; color: white; text-decoration: none; text-align: center; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; cursor: pointer; margin-bottom: 10px;">
-                            写真を選択
+                            ①写真を選択
                         </button>
                     </div>
                    
@@ -29,13 +29,13 @@
                    
                     <div style="margin-top: 20px;">
                         <button type="submit" id="analyzeBtn" style="display: inline-block; width: 100%; padding: 12px 24px; background-color: #2196F3; color: white; text-decoration: none; text-align: center; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; cursor: pointer;">
-                            植物を同定
+                            ②植物を同定
                         </button>
                     </div>
                 </form>
                 <div id="result" style="margin-top: 20px; text-align: center;"></div>
                 <button id="reportBtn" style="display: none; margin-top: 20px; padding: 12px 24px; background-color: #FF5722; color: white; text-decoration: none; text-align: center; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; cursor: pointer;">
-                    ※報告機能は工事中です※
+                    ※③報告機能は工事中です※
                 </button>
             </div>
         </div>
