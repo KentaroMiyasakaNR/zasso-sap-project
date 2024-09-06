@@ -34,7 +34,7 @@ class ReportController extends Controller
     {
         $request->validate([
             'identification_result' => 'required|string',
-            'photo' => 'required|image|max:2048', // 2MBまでの画像ファイル
+            'photo' => 'required|image|max:10240', // 10MBまでの画像ファイル
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
         ]);
@@ -101,7 +101,7 @@ class ReportController extends Controller
     public function analyze(Request $request)
     {
         $request->validate([
-            'photo' => 'required|image|max:2048',
+            'photo' => 'required|image|max:10240', // 10MBまでの画像ファイル
         ]);
 
         $image = $request->file('photo');
