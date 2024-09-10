@@ -44,12 +44,11 @@
     <!-- モーダル -->
     <div id="reportModal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
         <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 10px;">
-            <h2 style="text-align: center; margin-bottom: 20px;">報告が完了しました！ご協力ありがとうございます！</h2>
-            <h2 style="text-align: center; margin-bottom: 20px;">お礼にポイントを付与します！</h2>
-            <img id="modalPreview" src="{{ asset('images/reports/10pointsGet.jpg') }}" alt="報告完了" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px;">
-            <p id="modalPointDisplay" style="text-align: center; font-size: 24px; font-weight: bold; color: #4CAF50; margin-bottom: 20px;"></p>
+            <h2 style="text-align: center; margin-bottom: 20px;">この内容を報告しますか？</h2>
+            <img id="modalPreview" src="#" alt="選択した写真" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px;">
             <div style="display: flex; justify-content: space-around;">
-                <button id="backBtn" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">戻る</button>
+                <button id="confirmReportBtn" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">報告する</button>
+                <button id="cancelReportBtn" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">キャンセル</button>
             </div>
         </div>
     </div>
