@@ -77,6 +77,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/report.js'])
 
     <script>
+        var reportStoreUrl = "{{ route('report.store') }}";
+    </script>
+
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             const showReportListBtn = document.getElementById('showReportListBtn');
             const reportListModal = document.getElementById('reportListModal');

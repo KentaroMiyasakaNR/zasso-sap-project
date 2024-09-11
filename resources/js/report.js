@@ -108,7 +108,7 @@ if (typeof window.reportScriptLoaded === 'undefined') {
     function sendReportData(formData) {
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         
-        fetch('/reports', {
+        fetch(reportStoreUrl, {
             method: 'POST',
             body: formData,
             headers: {
