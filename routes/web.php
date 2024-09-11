@@ -22,9 +22,6 @@ Route::resource('report', ReportController::class);
 
 Route::post('/report/analyze', [ReportController::class, 'analyze'])->name('report.analyze');
 
-Route::middleware(['web'])->group(function () {
-    Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
-    // ... 他のレポート関連のルート ...
-});
+Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
 
 require __DIR__.'/auth.php';
