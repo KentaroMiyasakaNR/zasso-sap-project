@@ -4,15 +4,19 @@
             <h2 style="font-size: 24px; color: #333;">
                 {{ __('Gair AI') }}
             </h2>
-            <div id="pointDisplay" style="font-size: 18px; font-weight: bold; color: #4CAF50;">
-                0P
+            <div style="display: flex; align-items: center;">
+                <a href="{{ asset('PDF/gairAI利用規約.pdf') }}" target="_blank" style="color: #2196F3; text-decoration: underline; margin-right: 20px; font-size: 14px;">
+                    gairAI利用規約
+                </a>
+                <div id="pointDisplay" style="font-size: 18px; font-weight: bold; color: #4CAF50;">
+                    0P
+                </div>
             </div>
         </div>
     </x-slot>
     <div style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
         <div>
             <h2 style="text-align: center; font-size: 20px; color: #333; margin-bottom: 30px;">植物の写真をアップロード</h2>
-           
             <div style="display: flex; flex-direction: column; align-items: center;">
                 <form id="uploadForm" method="POST" enctype="multipart/form-data" style="width: 100%; max-width: 300px;" action="{{ route('report.analyze') }}">
                     @csrf  <!-- この行を追加 -->
