@@ -22,4 +22,6 @@ Route::resource('report', ReportController::class);
 
 Route::post('/report/analyze', [ReportController::class, 'analyze'])->name('report.analyze');
 
+Route::get('/reports', [ReportController::class, 'list'])->name('report.list');
+
 require __DIR__.'/auth.php';

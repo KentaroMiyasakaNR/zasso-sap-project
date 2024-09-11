@@ -139,4 +139,10 @@ class ReportController extends Controller
 
         return response()->json($response->json());
     }
+
+    public function list()
+    {
+        $reports = Report::with('user')->latest()->paginate(6);
+        return view('report.list', compact('reports'));
+    }
 }
