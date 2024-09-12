@@ -77,25 +77,44 @@ class ReportController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Report $report)
     {
-        //
+        return view('reports.edit', compact('report'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Report $report)
     {
-        //
+        $validatedData = $request->validate([
+            'content' => 'required',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $report->identification_result = $validatedData['content'];
+
+        if ($request->hasFile('photo')) {
+            if ($report->photo_path) {
+                Storage::disk('public')->delete($report->photo_path);
+            }
+            $path = $request->file('photo')->store('photos', 'public');
+            $report->photo_path = $path;
+        }
+
+        $report->save();
+
+        return redirect()->route('report.list')->with('success', '報告が更新されました。');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Report $report)
     {
-        //
+        $report->delete();
+
+        return redirect()->route('reports.index')->with('success', '報告が削除されました。');
     }
 
     public function analyze(Request $request)

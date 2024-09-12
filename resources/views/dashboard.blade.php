@@ -16,6 +16,11 @@
                 <a href="{{ route('report.list') }}" style="display: inline-block; padding: 12px 24px; background-color: #2196F3; color: white; text-decoration: none; text-align: center; width: 150px; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                     報告一覧
                 </a>
+                @if(Auth::user()->role === 'SystemAdmin')
+                <a href="{{ route('users.index') }}" style="display: inline-block; padding: 12px 24px; background-color: #FFA500; color: white; text-decoration: none; margin-top: 20px; text-align: center; width: 150px; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    ユーザー一覧
+                </a>
+                @endif
                 <button id="howToUseBtn" style="display: inline-block; padding: 12px 24px; background-color: #FFA500; color: white; text-decoration: none; margin-top: 20px; text-align: center; width: 150px; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; cursor: pointer;">
                     使い方
                 </button>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,4 +25,13 @@ Route::post('/report/analyze', [ReportController::class, 'analyze'])->name('repo
 
 Route::get('/reports', [ReportController::class, 'list'])->name('report.list');
 
+Route::get('/users', [UserController::class, 'index'])->name('users.index')->middleware('auth');
+
 require __DIR__.'/auth.php';
+
+// 既存のルート定義の後に追加
+Route::resource('users', UserController::class)->middleware('auth');
+
+Route::get('/report/{report}/edit', [ReportController::class, 'edit'])->name('report.edit');
+Route::put('/report/{report}', [ReportController::class, 'update'])->name('report.update');
+Route::delete('/report/{report}', [ReportController::class, 'destroy'])->name('report.destroy');
