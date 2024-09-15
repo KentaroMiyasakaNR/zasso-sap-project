@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ReportMapController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,3 +36,5 @@ Route::resource('users', UserController::class)->middleware('auth');
 Route::get('/report/{report}/edit', [ReportController::class, 'edit'])->name('report.edit');
 Route::put('/report/{report}', [ReportController::class, 'update'])->name('report.update');
 Route::delete('/report/{report}', [ReportController::class, 'destroy'])->name('report.destroy');
+
+Route::get('/report-map', [ReportMapController::class, 'index'])->name('report.map')->middleware('auth');
