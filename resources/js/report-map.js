@@ -25,8 +25,7 @@ async function loadReports() {
         listItem.dataset.lng = report.longitude ?? 0;
         listItem.dataset.name = report.user.name;
         listItem.dataset.id = report.id; // IDをデータ属性に追加
-        listItem.innerHTML = `<p class="font-semibold">${report.user.name}</p>
-                              <p class="text-sm text-gray-600">${new Date(report.created_at).toLocaleString()}</p>`;
+        listItem.innerHTML = `<p class="text-sm text-gray-600">${new Date(report.created_at).toLocaleString()}</p>`;
         reportList.appendChild(listItem);
     });
 }
@@ -60,7 +59,6 @@ function displayReportDetail(reportId) {
         const imageUrl = `${window.location.origin}/storage/${report.photo_path}`; // storageを追加
 
         reportDetailContent.innerHTML = `
-            <p><strong>報告者:</strong> ${report.user.name}</p>
             <p><strong>日時:</strong> ${new Date(report.created_at).toLocaleString()}</p>
             <p><strong>画像:</strong> <img src="${imageUrl}" alt="報告画像" class="w-full h-auto" /></p>
             <p><strong>結果:</strong> ${report.identification_result}</p>

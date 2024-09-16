@@ -22,11 +22,9 @@
                 </a>
                 @endif
                 @if(auth()->user()->role === 'SystemAdmin')
-                    <div>
-                        <a href="{{ route('report.map') }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150">
-                            報告マップ
-                        </a>
-                    </div>
+                <a href="{{ route('report.map') }}" style="display: inline-block; padding: 12px 24px; background-color: #009688; color: white; text-decoration: none; margin-top: 20px; text-align: center; width: 150px; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    報告マップ
+                </a>
                 @endif
                 <button id="howToUseBtn" style="display: inline-block; padding: 12px 24px; background-color: #FFA500; color: white; text-decoration: none; margin-top: 20px; text-align: center; width: 150px; border-radius: 25px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; cursor: pointer;">
                     使い方
