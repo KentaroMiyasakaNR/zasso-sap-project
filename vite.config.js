@@ -8,6 +8,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/report.js', 
+                'resources/js/report-map.js'
             ],
             refresh: true,
         }),

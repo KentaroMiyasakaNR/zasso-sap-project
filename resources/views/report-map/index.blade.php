@@ -16,15 +16,17 @@
                         <!-- 報告一覧 -->
                         <div class="w-1/3 ml-4 overflow-y-auto h-96">
                             <h3 class="text-lg font-semibold mb-4">報告一覧</h3>
-                            <ul class="space-y-2">
-                                @foreach ($reports as $report)
-                                <li class="border-b pb-2 cursor-pointer hover:bg-gray-100" onclick="showReportLocation({{ $report->latitude ?? 0 }}, {{ $report->longitude ?? 0 }}, '{{ addslashes($report->user->name) }}')">
-                                    <p class="font-semibold">{{ $report->user->name }}</p>
-                                    <p class="text-sm text-gray-600">{{ $report->created_at->format('Y-m-d H:i') }}</p>
-                                </li>
-                                @endforeach
+                            <ul id="report-list" class="space-y-2">
+                                <!-- 報告一覧はJavaScriptで動的に生成 -->
                             </ul>
-                            <button onclick="plotAllReports()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">すべての報告をプロット</button>
+                            <button id="plot-all-reports" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">すべての報告をプロット</button>
+                        </div>
+                    </div>
+                    <!-- 報告詳細表示 -->
+                    <div id="report-detail" class="mt-4 p-4 border border-gray-300 rounded hidden">
+                        <h4 class="font-semibold">報告詳細</h4>
+                        <div id="report-detail-content">
+                            <!-- 報告詳細の内容がここに表示される -->
                         </div>
                     </div>
                 </div>
@@ -32,43 +34,10 @@
         </div>
     </div>
 
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps_api_key') }}&v=weekly"></script>
     <script>
-        (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
-            key: "{{ config('services.google.maps_api_key') }}",
-            v: "weekly"
-        });
+        // APIからデータを取得するためのURL
+        const reportsApiUrl = '/api/reports';
     </script>
-    <script>
-        let map;
-        let currentMarker;
-
-        async function initMap() {
-            const { Map } = await google.maps.importLibrary("maps");
-
-            map = new Map(document.getElementById("map"), {
-                center: { lat: 35.6812, lng: 139.7671 }, // 東京の座標
-                zoom: 8,
-            });
-        }
-
-        async function showReportLocation(lat, lng, reporterName) {
-            const { Marker } = await google.maps.importLibrary("marker");
-
-            const position = { lat: lat, lng: lng };
-            map.setCenter(position);
-            map.setZoom(15);
-
-            if (currentMarker) {
-                currentMarker.setMap(null);
-            }
-
-            currentMarker = new Marker({
-                map: map,
-                position: position,
-                title: reporterName
-            });
-        }
-
-        initMap();
-    </script>
+    @vite('resources/js/report-map.js') <!-- Viteを使用してJSを読み込む -->
 </x-app-layout>

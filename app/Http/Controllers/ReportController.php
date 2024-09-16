@@ -16,7 +16,8 @@ class ReportController extends Controller
      */
     public function index()
     {
-        //
+        $reports = Report::with('user')->get(); // 必要なデータを取得
+        return view('report-map.index', compact('reports')); // Bladeファイルを返す
     }
 
     /**
@@ -163,5 +164,11 @@ class ReportController extends Controller
     {
         $reports = Report::with('user')->latest()->paginate(6);
         return view('report.list', compact('reports'));
+    }
+
+    public function getReports()
+    {
+        $reports = Report::with('user')->get(); // 必要なデータを取得
+        return response()->json($reports); // JSON形式で返す
     }
 }

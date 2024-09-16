@@ -37,4 +37,5 @@ Route::get('/report/{report}/edit', [ReportController::class, 'edit'])->name('re
 Route::put('/report/{report}', [ReportController::class, 'update'])->name('report.update');
 Route::delete('/report/{report}', [ReportController::class, 'destroy'])->name('report.destroy');
 
-Route::get('/report-map', [ReportMapController::class, 'index'])->name('report.map')->middleware('auth');
+Route::get('/report-map', [ReportController::class, 'index'])->name('report.map')->middleware('auth');
+Route::get('/api/reports', [ReportController::class, 'getReports']); // JSONデータを取得するルート
