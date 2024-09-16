@@ -52,15 +52,17 @@ async function showReportLocation(lat, lng, reporterName, reportId) {
 }
 
 function displayReportDetail(reportId) {
-    const report = reports.find(r => r.id === reportId); // IDで報告を検索
+    const report = reports.find(r => r.id == reportId); // IDで報告を検索
     const reportDetailContent = document.getElementById('report-detail-content');
     const reportDetail = document.getElementById('report-detail');
-
     if (report) {
+        // 画像のURLを生成
+        const imageUrl = `${window.location.origin}/storage/${report.photo_path}`; // storageを追加
+
         reportDetailContent.innerHTML = `
             <p><strong>報告者:</strong> ${report.user.name}</p>
             <p><strong>日時:</strong> ${new Date(report.created_at).toLocaleString()}</p>
-            <p><strong>画像:</strong> <img src="${report.image_url}" alt="報告画像" class="w-full h-auto" /></p>
+            <p><strong>画像:</strong> <img src="${imageUrl}" alt="報告画像" class="w-full h-auto" /></p>
             <p><strong>結果:</strong> ${report.identification_result}</p>
         `;
         reportDetail.classList.remove('hidden'); // 詳細を表示
