@@ -25,11 +25,9 @@ if (typeof window.reportScriptLoaded === 'undefined') {
 
     // Function to preview the selected image
     function previewImage(input) {
-        debugLog('previewImage called');
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                debugLog('FileReader onload called');
                 preview.src = e.target.result;
                 imagePreview.style.display = 'block';
             }
