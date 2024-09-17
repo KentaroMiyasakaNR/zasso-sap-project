@@ -36,8 +36,8 @@
 
     <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps_api_key') }}&v=weekly"></script>
     <script>
-        // APIからデータを取得するためのURL
-        const reportsApiUrl = '/api/reports';
+        // 動的に生成されたベースURLを含めたAPIのURL
+        var reportsApiUrl = "{{ url('api/reports') }}";
     </script>
     @vite('resources/js/report-map.js') <!-- Viteを使用してJSを読み込む -->
 </x-app-layout>
