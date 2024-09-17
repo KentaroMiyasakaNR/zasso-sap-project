@@ -55,8 +55,8 @@ function displayReportDetail(reportId) {
     const reportDetailContent = document.getElementById('report-detail-content');
     const reportDetail = document.getElementById('report-detail');
     if (report) {
-        // 画像のURLを生成
-        const imageUrl = `${window.location.origin}/storage/${report.photo_path}`; // storageを追加
+        // 画像のURLを生成（storageUrlを使用）
+        const imageUrl = `${storageUrl}/${report.photo_path}`;
 
         reportDetailContent.innerHTML = `
             <p><strong>日時:</strong> ${new Date(report.created_at).toLocaleString()}</p>

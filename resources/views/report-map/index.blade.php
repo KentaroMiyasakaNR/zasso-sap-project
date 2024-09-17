@@ -38,6 +38,8 @@
     <script>
         // 動的に生成されたベースURLを含めたAPIのURL
         var reportsApiUrl = "{{ url('api/reports') }}";
+        // ストレージのベースURLを動的に設定
+        var storageUrl = "{{ asset('storage') }}";
     </script>
     @vite('resources/js/report-map.js') <!-- Viteを使用してJSを読み込む -->
 </x-app-layout>
