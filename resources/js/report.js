@@ -37,7 +37,7 @@ if (typeof window.reportScriptLoaded === 'undefined') {
 
     // Function to analyze the image
     function analyzeImage(event) {
-        event.preventDefault(); // フォームのデフォルトの送信を防ぐ    
+        event.preventDefault();
         console.log('同定分析analyzeImage called');
         
         if (!photoInput.files || photoInput.files.length === 0) {
@@ -54,18 +54,23 @@ if (typeof window.reportScriptLoaded === 'undefined') {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            return response.json();
+        })
         .then(data => {
-            if (data && data.choices && data.choices[0] && data.choices[0].message) {
-                resultDiv.innerHTML = `<p>${data.choices[0].message.content}</p>`;
-                reportBtn.style.display = 'inline-block'; // 分析結果が表示されたら報告ボタンを表示
+            console.log('サーバーからの応答:', data);
+            if (data && data.content) {
+                resultDiv.innerHTML = `<pre>${data.content}</pre>`;
+                reportBtn.style.display = 'inline-block';
             } else {
-                console.error('Unexpected data structure:', data);
-                resultDiv.innerHTML = '<p>予期しないデータ構造です。管理者に連絡してください。</p>';
+                console.error('予期しないデータ構造:', data);
+                resultDiv.innerHTML = '<p>データの取得に失敗しました。もう一度お試しください。</p>';
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('エラー:', error);
             resultDiv.innerHTML = '<p>エラーが発生しました。もう一度お試しください。</p>';
         });
     }

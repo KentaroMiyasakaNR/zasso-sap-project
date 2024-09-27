@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ReportController extends Controller
 {
@@ -118,46 +119,171 @@ class ReportController extends Controller
         return redirect()->route('reports.index')->with('success', '報告が削除されました。');
     }
 
+    // make PHP / CURL compliant with multidimensional arrays
+function curl_setopt_custom_postfields($ch, $postfields, $headers = null) {
+    $algos = hash_algos();
+    $hashAlgo = null;
+  
+    foreach (array('sha1', 'md5') as $preferred) {
+      if (in_array($preferred, $algos)) {
+        $hashAlgo = $preferred;
+        break;
+      }
+    }
+  
+    if ($hashAlgo === null) {
+      list($hashAlgo) = $algos;
+    }
+  
+    $boundary = '----------------------------' . substr(hash(
+      $hashAlgo, 'cURL-php-multiple-value-same-key-support' . microtime()
+    ), 0, 12);
+  
+    $body = array();
+    $crlf = "\r\n";
+    $fields = array();
+  
+    foreach ($postfields as $key => $value) {
+      if (is_array($value)) {
+        foreach ($value as $v) {
+          $fields[] = array($key, $v);
+        }
+      } else {
+        $fields[] = array($key, $value);
+      }
+    }
+  
+    foreach ($fields as $field) {
+      list($key, $value) = $field;
+  
+      if (strpos($value, '@') === 0) {
+        preg_match('/^@(.*?)$/', $value, $matches);
+        list($dummy, $filename) = $matches;
+  
+        $body[] = '--' . $boundary;
+        $body[] = 'Content-Disposition: form-data; name="' . $key . '"; filename="' . basename($filename) . '"';
+        $body[] = 'Content-Type: application/octet-stream';
+        $body[] = '';
+        $body[] = file_get_contents($filename);
+      } else {
+        $body[] = '--' . $boundary;
+        $body[] = 'Content-Disposition: form-data; name="' . $key . '"';
+        $body[] = '';
+        $body[] = $value;
+      }
+    }
+  
+    $body[] = '--' . $boundary . '--';
+    $body[] = '';
+  
+    $contentType = 'multipart/form-data; boundary=' . $boundary;
+    $content = join($crlf, $body);
+  
+    $contentLength = strlen($content);
+  
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      'Content-Length: ' . $contentLength,
+      'Expect: 100-continue',
+      'Content-Type: ' . $contentType
+    ));
+  
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+  }
+  
+
     public function analyze(Request $request)
     {
-        $request->validate([
-            'photo' => 'required|image|max:10240', // 10MBまでの画像ファイル
-        ]);
+        try {
+            $request->validate([
+                'photo' => 'required|image|max:10240', // 10MBまでの画像ファイル
+            ]);
 
-        $image = $request->file('photo');
-        $imagePath = $image->store('temp', 'public');
-        $fullPath = Storage::disk('public')->path($imagePath);
+            $image = $request->file('photo');
+            $imagePath = $image->store('temp', 'public');
+            $fullPath = Storage::disk('public')->path($imagePath);
 
-        $base64Image = base64_encode(file_get_contents($fullPath));
+            $PROJECT = "all";
+            $API_LANG = '&lang=ja'; // 日本語指定
+            $url = 'https://my-api.plantnet.org/v2/identify/' . $PROJECT . '?api-key=' . config('services.plantnet.api_key') . $API_LANG;
+            $data = [
+                'organs' => ['auto'],
+                'images' => ['@' . $fullPath]
+            ];
 
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . config('services.openai.api_key'),
-        ])->post('https://api.openai.com/v1/chat/completions', [
-            'model' => 'gpt-4o',
-            'messages' => [
-                [
-                    'role' => 'user',
-                    'content' => [
-                        [
-                            'type' => 'text',
-                            'text' => 'この画像の植物の属名を教えてください。なるべく特定外来植物の可能性を考慮して'
-                        ],
-                        [
-                            'type' => 'image_url',
-                            'image_url' => [
-                                'url' => "data:image/jpeg;base64,{$base64Image}"
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            'max_tokens' => 1000
-        ]);
+            $ch = curl_init();
 
-        Storage::disk('public')->delete($imagePath);
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $url,
+                CURLOPT_POST => true,
+                CURLOPT_RETURNTRANSFER => true,
+            ]);
 
-        return response()->json($response->json());
+            $this->curl_setopt_custom_postfields($ch, $data);
+
+            $response = curl_exec($ch);
+
+            if (curl_errno($ch)) {
+                Log::error('cURL Error: ' . curl_error($ch));
+                throw new \Exception('PlantNet APIへの接続中にエラーが発生しました: ' . curl_error($ch));
+            }
+
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            if ($httpCode != 200) {
+                Log::error('PlantNet API Error: HTTP Code ' . $httpCode, ['response' => $response]);
+                throw new \Exception('PlantNet APIからエラーレスポンスを受け取りました。HTTP Code: ' . $httpCode);
+            }
+
+            curl_close($ch);
+
+            Storage::disk('public')->delete($imagePath);
+
+            Log::info('Raw PlantNet API Response:', ['response' => $response]);
+
+            $result = json_decode($response, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \Exception('JSON解析エラー: ' . json_last_error_msg());
+            }
+
+            if (empty($result) || !isset($result['results'])) {
+                Log::error('Invalid API response:', ['response' => $response]);
+                throw new \Exception('PlantNet APIからの応答が無効です。詳細: ' . print_r($result, true));
+            }
+
+            $formattedResponse = $this->formatPlantNetResponseAsString($result);
+
+            if (empty($formattedResponse)) {
+                throw new \Exception('フォーマットされた応答が空です。');
+            }
+
+            return response()->json(['content' => $formattedResponse]);
+        } catch (\Exception $e) {
+            Log::error('Analyze Error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    private function formatPlantNetResponseAsString($result)
+    {
+        $formattedString = "";
+        $count = 0;
+
+        if (isset($result['results']) && is_array($result['results'])) {
+            foreach ($result['results'] as $item) {
+                if ($count >= 10) break;
+
+                // commonNamesが存在し、空でない場合は最初の要素を使用。それ以外の場合は学名を使用。
+                $species = !empty($item['species']['commonNames']) ? $item['species']['commonNames'][0] : $item['species']['scientificNameWithoutAuthor'];
+                $family = $item['species']['family']['scientificNameWithoutAuthor'] ?? '不明';
+
+                $formattedString .= "植物名：{$species}\n";
+                $formattedString .= "　　科：{$family}\n\n";
+
+                $count++;
+            }
+        }
+
+        return trim($formattedString);
     }
 
     public function list()

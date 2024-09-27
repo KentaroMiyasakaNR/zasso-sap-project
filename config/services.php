@@ -43,4 +43,8 @@ return [
         'maps_api_key' => env('GOOGLE_MAPS_API_KEY'),
     ],
 
+    'plantnet' => [
+        'api_key' => env('PLANTNET_API_KEY'),
+    ],
+
 ];
