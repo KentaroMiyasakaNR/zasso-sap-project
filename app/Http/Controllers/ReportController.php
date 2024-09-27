@@ -272,18 +272,37 @@ function curl_setopt_custom_postfields($ch, $postfields, $headers = null) {
             foreach ($result['results'] as $item) {
                 if ($count >= 10) break;
 
-                // commonNamesが存在し、空でない場合は最初の要素を使用。それ以外の場合は学名を使用。
-                $species = !empty($item['species']['commonNames']) ? $item['species']['commonNames'][0] : $item['species']['scientificNameWithoutAuthor'];
-                $family = $item['species']['family']['scientificNameWithoutAuthor'] ?? '不明';
+                $commonNames = $item['species']['commonNames'] ?? [];
+                $japaneseCommonName = $this->findJapaneseCommonName($commonNames);
 
-                $formattedString .= "植物名：{$species}\n";
-                $formattedString .= "　　科：{$family}\n\n";
+                if ($japaneseCommonName) {
+                    $species = $japaneseCommonName;
+                    $family = $item['species']['family']['scientificNameWithoutAuthor'] ?? '不明';
 
-                $count++;
+                    $formattedString .= "植物名：{$species}\n";
+                    $formattedString .= "　　科：{$family}\n\n";
+
+                    $count++;
+                }
             }
         }
 
         return trim($formattedString);
+    }
+
+    private function findJapaneseCommonName($commonNames)
+    {
+        foreach ($commonNames as $name) {
+            if ($this->isJapanese($name)) {
+                return $name;
+            }
+        }
+        return null;
+    }
+
+    private function isJapanese($string)
+    {
+        return preg_match('/[\p{Han}\p{Hiragana}\p{Katakana}]/u', $string);
     }
 
     public function list()
