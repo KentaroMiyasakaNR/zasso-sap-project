@@ -39,7 +39,7 @@
                                         削除
                                     </button>
                                 </form>
-                                @if($report->latitude && $report->longitude)
+                                @if($report->latitude && $report->longitude && auth()->user()->role === 'SystemAdmin')
                                     <a href="https://www.google.com/maps/search/?api=1&query={{ $report->latitude }},{{ $report->longitude }}" target="_blank" class="inline-block px-4 py-2 bg-green-500 text-white font-bold rounded hover:bg-green-600 transition duration-300 ease-in-out no-underline !important">
                                         位置情報
                                     </a>
