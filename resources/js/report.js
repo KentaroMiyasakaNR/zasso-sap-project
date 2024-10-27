@@ -120,13 +120,13 @@ if (typeof window.reportScriptLoaded === 'undefined') {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('報告が送信されました:', data);
-            alert('報告が正常に送信されました。');
+            console.log('記録が送信されました:', data);
+            alert('記録が正常に送信されました。');
             hideReportModal();
         })
         .catch(error => {
-            console.error('報告の送信中にエラーが発生しました:', error);
-            alert('報告の送信中にエラーが発生しました。もう一度お試しください。');
+            console.error('記録の送信中にエラーが発生しました:', error);
+            alert('記録の送信中にエラーが発生しました。もう一度お試しください。');
         });
     }
 

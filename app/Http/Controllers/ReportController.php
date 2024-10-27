@@ -30,7 +30,7 @@ class ReportController extends Controller
     }
 
     /**
-     * 新しい報告を保存する
+     * 新しい記録を保存する
      */
     public function store(Request $request)
     {
@@ -44,7 +44,7 @@ class ReportController extends Controller
         // 画像を保存
         $photoPath = $request->file('photo')->store('reports', 'public');
 
-        // 報告を作成
+        // 記録を作成
         $report = Report::create([
             'user_id' => Auth::id(),
             'identification_result' => $request->identification_result,
@@ -63,7 +63,7 @@ class ReportController extends Controller
         }
 
         return response()->json([
-            'message' => '報告が正常に保存されました。',
+            'message' => '記録が正常に保存されました。',
             'report_id' => $report->id
         ], 201);
     }
@@ -106,7 +106,7 @@ class ReportController extends Controller
 
         $report->save();
 
-        return redirect()->route('report.list')->with('success', '報告が更新されました。');
+        return redirect()->route('report.list')->with('success', '記録が更新されました。');
     }
 
     /**
@@ -116,7 +116,7 @@ class ReportController extends Controller
     {
         $report->delete();
 
-        return redirect()->route('reports.index')->with('success', '報告が削除されました。');
+        return redirect()->route('reports.index')->with('success', '記録が削除されました。');
     }
 
     // make PHP / CURL compliant with multidimensional arrays
@@ -195,7 +195,7 @@ function curl_setopt_custom_postfields($ch, $postfields, $headers = null) {
     {
         try {
             $request->validate([
-                'photo' => 'required|image|max:10240', // 10MBまでの画像ファイル
+                'photo' => 'required|image|max:20480', // 10MBまでの画像ファイル
             ]);
 
             $image = $request->file('photo');
@@ -265,7 +265,7 @@ function curl_setopt_custom_postfields($ch, $postfields, $headers = null) {
 
     private function formatPlantNetResponseAsString($result)
     {
-        $formattedString = "";
+        $formattedString = "<div style='text-align: center;'><strong>最も近しい植物</strong></div>";
         $count = 0;
 
         if (isset($result['results']) && is_array($result['results'])) {
@@ -278,6 +278,10 @@ function curl_setopt_custom_postfields($ch, $postfields, $headers = null) {
                 if ($japaneseCommonName) {
                     $species = $japaneseCommonName;
                     $family = $item['species']['family']['scientificNameWithoutAuthor'] ?? '不明';
+
+                    if ($count > 0) {
+                        $formattedString .= "<div style='text-align: center;'><strong>" . ($count + 1) . "番目</strong></div>";
+                    }
 
                     $formattedString .= "植物名：{$species}\n";
                     $formattedString .= "　　科：{$family}\n\n";
