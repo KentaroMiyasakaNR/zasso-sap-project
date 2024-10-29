@@ -45,6 +45,9 @@ if (typeof window.reportScriptLoaded === 'undefined') {
             return;
         }
         
+        // 読み込み中モーダルを表示
+        document.getElementById('loadingModal').style.display = 'block';
+        
         const formData = new FormData(uploadForm);
         
         fetch(uploadForm.action, {
@@ -61,6 +64,9 @@ if (typeof window.reportScriptLoaded === 'undefined') {
         })
         .then(data => {
             console.log('サーバーからの応答:', data);
+            // 読み込み中モーダルを非表示
+            document.getElementById('loadingModal').style.display = 'none';
+            
             if (data && data.content) {
                 resultDiv.innerHTML = `<pre>${data.content}</pre>`;
                 reportBtn.style.display = 'inline-block';
@@ -71,6 +77,8 @@ if (typeof window.reportScriptLoaded === 'undefined') {
         })
         .catch(error => {
             console.error('エラー:', error);
+            // 読み込み中モーダルを非表示
+            document.getElementById('loadingModal').style.display = 'none';
             resultDiv.innerHTML = '<p>エラーが発生しました。もう一度お試しください。</p>';
         });
     }

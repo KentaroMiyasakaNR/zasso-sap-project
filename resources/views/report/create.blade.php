@@ -57,6 +57,21 @@
         </div>
     </div>
 
+    <!-- 読み込み中モーダルを追加 -->
+    <div id="loadingModal" style="display: none; position: fixed; z-index: 2; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+        <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 10px; text-align: center;">
+            <h2>現在同定中...</h2>
+            <div class="loading-spinner" style="margin: 20px auto; width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        </div>
+    </div>
+
+    <style>
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    </style>
+
     <!-- 音声ファイル -->
     <audio id="getPointsSound" src="{{ asset('sounds/getpoints.mp3') }}"></audio>
 
